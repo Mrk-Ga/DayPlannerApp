@@ -1,11 +1,10 @@
-<PlannerScreen>:
+<HomeScreen>:
     MDBoxLayout:
         orientation: "vertical"
         spacing: 10
 
         MDTopAppBar:
             id: header
-            #title: "Planer na dzień:"
             elevation: 4
             anchor_title: "center"
 
@@ -29,8 +28,6 @@
                 text: "Miesiąc"
                 size_hint_x: 1
 
-
-
         ScrollView:
             MDList:
                 id: task_list
@@ -39,4 +36,4 @@
         icon: "plus"
         md_bg_color: app.theme_cls.primary_color
         pos_hint: {"right": 0.95, "bottom": 0.05}
-        on_release: app.add_task()
+        on_release: root.open_add_task_dialog()

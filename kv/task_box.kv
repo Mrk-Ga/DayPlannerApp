@@ -1,0 +1,22 @@
+<TaskBox>:
+    orientation: "vertical"
+    padding: 10
+    size_hint_y: None
+    height: dp(100)
+
+    MDBoxLayout:
+        orientation: "horizontal"
+        MDLabel:
+            id: task_label
+            text: "Domyślny tekst"
+
+        MDIconButton:
+            icon: "calendar-sync"
+            pos_hint: {"center_y": 0.5}
+            on_release: root.cofnij_ekran()
+
+    MDSlider:
+        min: 0
+        max: 100
+        step: 5
+        value: 0
