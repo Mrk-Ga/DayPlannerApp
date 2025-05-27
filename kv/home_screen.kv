@@ -26,7 +26,9 @@
 
             MDRaisedButton:
                 text: "Miesiąc"
+                id: month_button
                 size_hint_x: 1
+                on_release: root.open_month_calendar()
 
         ScrollView:
             MDList:

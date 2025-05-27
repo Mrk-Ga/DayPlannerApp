@@ -1,13 +1,17 @@
+from kivy.factory import Factory
+from kivy.lang import Builder
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
 
 from database import models
 from screens.TaskBox import TaskBox
-
+#Builder.load_file('kv/task_dialog.kv')
 
 class AddTaskDialog:
     def __init__(self, parent_screen):
+        super().__init__()
         self.parent_screen = parent_screen
         self.text_field = MDTextField(hint_text="Nazwa zadania", mode="rectangle")
         self.dialog = MDDialog(
@@ -20,6 +24,7 @@ class AddTaskDialog:
             ]
         )
 
+
     def open(self):
         self.dialog.open()
 
@@ -31,11 +36,3 @@ class AddTaskDialog:
         task = models.Task(name = text, date=self.parent_screen.acc_date)
         models.add_task_to_db(task)
         self.parent_screen.refresh_tasks()
-        '''
-        if text:
-            self.parent_screen.ids.task_list.add_widget(
-                TaskBox(taskIdFromDB=task.id, text=text)
-            )
-        self.dialog.dismiss()
-        self.text_field.text = ""
-        '''

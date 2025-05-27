@@ -46,9 +46,14 @@ def add_task_to_db(task: Task):
 
 def read_tasks_from_db_by_date(parent_screen, date):
     for task in get_tasks_by_date(date):
+        taskBox = TaskBox(parentScreen=parent_screen, taskIdFromDB=task.id,
+                          text=task.name, progress = task.progress,
+                          completed=task.completed)
         parent_screen.ids.task_list.add_widget(
-            TaskBox(parentScreen=parent_screen, taskIdFromDB=task.id, text=task.name)
+            taskBox
         )
+
+
 
 def get_tasks_by_date(date_str: str):
     tasks = session.query(Task).filter_by(date=date_str).all()
@@ -66,6 +71,31 @@ def update_task_date(task_id: int, new_date: str):
         print(f"Zaktualizowano datę zadania (id={task_id}) na {new_date}")
     else:
         print(f"Nie znaleziono zadania o id={task_id}")
+
+def remove_task(task_id: int):
+    # Pobierz zadanie o danym id
+    task = session.query(Task).filter_by(id=task_id).first()
+
+    if task:
+        # Usuń zadanie z sesji
+        session.delete(task)
+        # Zatwierdź zmiany
+        session.commit()
+        print(f"Usunięto zadanie o id={task_id}")
+    else:
+        print(f"Nie znaleziono zadania o id={task_id}")
+
+def set_task_progress(taskID, value):
+    task = session.query(Task).filter_by(id=taskID).first()
+    task.progress = value
+    session.commit()
+
+def set_task_if_completed(taskID, completed):
+    task = session.query(Task).filter_by(id=taskID).first()
+    task.completed = completed
+    session.commit()
+
+
 
 engine = create_engine('sqlite:///planer.db')
 Base.metadata.create_all(engine)

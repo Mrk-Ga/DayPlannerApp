@@ -5,7 +5,7 @@ from kivymd.uix.screen import MDScreen
 
 from database import models
 from screens.AddTaskDialog import AddTaskDialog
-
+from screens.Calendar import Calendar
 
 Builder.load_file("kv/home_screen.kv")
 
@@ -23,6 +23,10 @@ class HomeScreen(MDScreen):
         if not self.dialog:
             self.dialog = AddTaskDialog(self)
         self.dialog.open()
+
+    def open_month_calendar(self):
+        Calendar(self)
+
 
     def refresh_tasks(self):
         self.ids.task_list.clear_widgets()
