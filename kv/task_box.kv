@@ -13,10 +13,11 @@
         MDIconButton:
             icon: "calendar-sync"
             pos_hint: {"center_y": 0.5}
-            on_release: root.cofnij_ekran()
+            on_release: root.change_task_date()
 
     MDSlider:
         min: 0
         max: 100
         step: 5
         value: 0
+        on_value: root.check_slider_value(self.value)

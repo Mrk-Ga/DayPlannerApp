@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from screens.TaskGUI import TaskBox
+from screens.TaskBox import TaskBox
 
 Base = declarative_base()
 '''
@@ -47,12 +47,25 @@ def add_task_to_db(task: Task):
 def read_tasks_from_db_by_date(parent_screen, date):
     for task in get_tasks_by_date(date):
         parent_screen.ids.task_list.add_widget(
-            TaskBox(text=task.name)
+            TaskBox(parentScreen=parent_screen, taskIdFromDB=task.id, text=task.name)
         )
 
 def get_tasks_by_date(date_str: str):
     tasks = session.query(Task).filter_by(date=date_str).all()
     return tasks
+
+def update_task_date(task_id: int, new_date: str):
+    task = session.query(Task).filter_by(id=task_id).first()
+
+    if task:
+        # Zmień datę
+        task.date = new_date
+
+        # Zatwierdź zmiany
+        session.commit()
+        print(f"Zaktualizowano datę zadania (id={task_id}) na {new_date}")
+    else:
+        print(f"Nie znaleziono zadania o id={task_id}")
 
 engine = create_engine('sqlite:///planer.db')
 Base.metadata.create_all(engine)

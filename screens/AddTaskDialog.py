@@ -3,7 +3,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
 
 from database import models
-from screens.TaskGUI import TaskBox
+from screens.TaskBox import TaskBox
 
 
 class AddTaskDialog:
@@ -28,12 +28,14 @@ class AddTaskDialog:
 
     def add_task(self, *args):
         text = self.text_field.text.strip()
+        task = models.Task(name = text, date=self.parent_screen.acc_date)
+        models.add_task_to_db(task)
+        self.parent_screen.refresh_tasks()
+        '''
         if text:
-
             self.parent_screen.ids.task_list.add_widget(
-                TaskBox(text=text)
+                TaskBox(taskIdFromDB=task.id, text=text)
             )
         self.dialog.dismiss()
         self.text_field.text = ""
-        task = models.Task(name = text, date=self.parent_screen.acc_date)
-        models.add_task_to_db(task)
+        '''

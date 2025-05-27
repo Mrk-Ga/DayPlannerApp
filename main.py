@@ -3,7 +3,7 @@ from kivy.config import Config
 Config.set('graphics', 'width', '360')
 Config.set('graphics', 'height', '640')
 from kivymd.app import MDApp
-from screens.home_screen import HomeScreen
+from screens.HomeScreen import HomeScreen
 
 class PlannerApp(MDApp):
     def build(self):
