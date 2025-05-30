@@ -1,0 +1,16 @@
+<AddTaskContent@MDBoxLayout>:
+    orientation: "horizontal"
+    spacing: dp(10)
+    padding: dp(10)
+    size_hint_y: None
+    height: self.minimum_height
+
+    MDTextField:
+        id: task_input
+        hint_text: "Nazwa zadania"
+        mode: "rectangle"
+        size_hint_x: 0.85
+
+    MDIconButton:
+        icon: "arrow-right"
+        on_release: root.add_weekly_task()

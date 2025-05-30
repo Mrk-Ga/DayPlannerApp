@@ -29,6 +29,7 @@ class HomeScreen(MDScreen):
 
     def open_today_tasks(self):
         self.acc_date = self.set_accuall_date()
+        self.ids.header.title = f"Dzień: {self.acc_date}"
         self.refresh_tasks()
 
 

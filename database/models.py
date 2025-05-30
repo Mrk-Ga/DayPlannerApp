@@ -34,8 +34,6 @@ class Task(Base):
     progress = Column(Integer, default=0)  # 0–100
     completed = Column(Boolean, default=False)
     date = Column(String)
-    #day_id = Column(Integer, ForeignKey('days.id'))
-    #day = relationship('Day', back_populates='tasks')
 
     def __repr__(self):
         return f"<Task(name='{self.name}', day='{self.date}', completed={self.completed})>"
