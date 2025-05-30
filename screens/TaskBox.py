@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+
 from kivy.metrics import dp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDIconButton
@@ -34,6 +36,15 @@ class TaskBox(MDCard):
 
     def change_task_date(self, *args):
         DatePicker(self.parentScreen, self.taskID)
+
+    def change_date_to_next_day(self):
+        print("zmieniam: ", type(self.parentScreen.acc_date))
+        date_obj = datetime.strptime(self.parentScreen.acc_date, "%Y-%m-%d").date()
+        new_date = date_obj + timedelta(days=1)
+        new_date_str = new_date.strftime("%Y-%m-%d")
+
+        models.update_task_date(self.taskID, new_date_str)
+        self.parentScreen.refresh_tasks()
 
     def remove_task(self):
         models.remove_task(self.taskID)

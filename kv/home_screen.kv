@@ -17,15 +17,12 @@
             padding: dp(10)
 
             MDRaisedButton:
-                text: "Dzień"
+                text: "Dzisiaj"
                 size_hint_x: 1
+                on_release: root.open_today_tasks()
 
             MDRaisedButton:
-                text: "Tydzień"
-                size_hint_x: 1
-
-            MDRaisedButton:
-                text: "Miesiąc"
+                text: "Kalendarz"
                 id: month_button
                 size_hint_x: 1
                 on_release: root.open_month_calendar()
@@ -36,6 +33,6 @@
 
     MDFloatingActionButton:
         icon: "plus"
-        md_bg_color: app.theme_cls.primary_color
+        md_bg_color: (0,0,1,1)
         pos_hint: {"right": 0.95, "bottom": 0.05}
         on_release: root.open_add_task_dialog()

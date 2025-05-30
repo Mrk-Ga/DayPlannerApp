@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from kivy.lang import Builder
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.pickers import MDDatePicker
@@ -19,7 +21,8 @@ class DatePicker(MDScreen):
         self.parentScreen = parentScreen
 
     def update_task_date(self, instance, date, range):
-        models.update_task_date(self.taskID, date)
+
+        models.update_task_date(self.taskID, date.strftime("%Y-%m-%d"))
         self.parentScreen.refresh_tasks()
         instance.dismiss()
 

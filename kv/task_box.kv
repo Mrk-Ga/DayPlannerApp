@@ -11,15 +11,21 @@
             id: task_label
             text: "Domyślny tekst"
 
-        MDRaisedButton:
-            id: remove_task
-            text: "Usuń zadanie"
+        MDIconButton:
+            icon: "trash-can"
+            pos_hint: {"center_y": 0.5}
             on_release: root.remove_task()
 
         MDIconButton:
             icon: "calendar-sync"
             pos_hint: {"center_y": 0.5}
             on_release: root.change_task_date()
+
+        MDIconButton:
+            icon: "arrow-right"
+            pos_hint: {"center_y": 0.5}
+            text_color: 0,0,0,1
+            on_release: root.change_date_to_next_day()
 
     MDSlider:
         id: task_slider

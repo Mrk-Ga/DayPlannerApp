@@ -11,6 +11,7 @@ class Calendar(MDScreen):
         self.parentScreen = parentScreen
 
     def change_acc_date(self, instance, date, range):
-        self.parentScreen.acc_date = date
+        self.parentScreen.ids.header.title = f"Dzień: {date.strftime("%Y-%m-%d")}"
+        self.parentScreen.acc_date = date.strftime("%Y-%m-%d")
         self.parentScreen.refresh_tasks()
         instance.dismiss()
