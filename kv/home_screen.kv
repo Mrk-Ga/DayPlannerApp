@@ -1,37 +1,52 @@
 <HomeScreen>:
+    md_bg_color: (0.8, 0.8, 0.9, 0.9)
     MDBoxLayout:
         orientation: "vertical"
         spacing: 10
+        theme_bg_color: "Primary"
 
         MDTopAppBar:
             id: header
-            elevation: 47
+            #elevation: 47
+            md_bg_color: (0.8, 0.8, 0.9, 0.9)
             anchor_title: "center"
+
+            MDTopAppBarTitle:
+                id: headerTitle
+                text: ""
 
 
         MDBoxLayout:
             orientation: "horizontal"
             size_hint_y: None
+            valign: "center"
             height: dp(50)
             spacing: dp(10)
             padding: dp(10)
 
-            MDRaisedButton:
-                text: "Dzisiaj"
-                size_hint_x: 1
+            MDButton:
+                size_hint_x:1
+                style: "filled"
+                theme_bg_color: "Primary"
                 on_release: root.open_today_tasks()
+                MDButtonText:
+                    text: "Dzisiaj"
 
-            MDRaisedButton:
+
+            MDButton:
                 text: "Kalendarz"
                 id: month_button
                 size_hint_x: 1
+                style: "tonal"
                 on_release: root.open_month_calendar()
+                MDButtonText:
+                    text: "Kalendarz"
 
         ScrollView:
             MDList:
                 id: task_list
 
-    MDFloatingActionButton:
+    MDFabButton:
         icon: "plus"
         md_bg_color: (0,0,1,1)
         pos_hint: {"right": 0.95, "bottom": 0.05}
