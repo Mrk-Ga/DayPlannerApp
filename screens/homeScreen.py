@@ -1,0 +1,55 @@
+from datetime import datetime
+
+from kivy.lang import Builder
+from kivymd.uix.screen import MDScreen
+
+from database import models
+from screens.addTaskDialog import AddTaskDialog
+from screens.calendar import Calendar
+from screens.taskBox import TaskBox
+
+Builder.load_file("./kv/home_screen.kv")
+
+class HomeScreen(MDScreen):
+    dialog = None
+
+    def on_kv_post(self, base_widget):
+
+        self.acc_date = self.set_accuall_date()
+        self.ids.headerTitle.text = f"Dzień: {self.acc_date}"
+        self.refresh_tasks()
+
+
+    def open_add_task_dialog(self):
+        if not self.dialog:
+            self.dialog = AddTaskDialog(self)
+        self.dialog.open()
+
+    def open_month_calendar(self):
+        Calendar(self)
+
+    def open_today_tasks(self):
+        self.acc_date = self.set_accuall_date()
+        self.ids.headerTitle.text = f"Dzień: {self.acc_date}"
+        self.refresh_tasks()
+
+
+    def refresh_tasks(self):
+        self.ids.task_list.clear_widgets()
+        for task in models.get_tasks_by_date(self.acc_date):
+            taskBox = TaskBox(parentScreen=self, taskIdFromDB=task.id,
+                              text=task.name, progress=task.progress,
+                              completed=task.completed)
+            self.ids.task_list.add_widget(
+                taskBox
+            )
+
+
+
+    def set_accuall_date(self):
+        date = datetime.now().strftime("%Y-%m-%d")
+        return date
+
+
+
+

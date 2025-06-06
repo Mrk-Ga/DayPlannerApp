@@ -1,10 +1,12 @@
-from sqlalchemy import Column, Integer, String, Boolean, create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-from screens.TaskBox import TaskBox
+from kivy.utils import platform
+from sqlalchemy import Column, Integer, String, Boolean, create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
-'''
+
 if platform == 'android':
     from android.storage import app_storage_path
     db_path = os.path.join(app_storage_path(), 'planer.db')
@@ -12,7 +14,8 @@ else:
     db_path = 'planer.db'
 
 
-'''
+
+
 
 class Day(Base):
     __tablename__ = 'days'
@@ -42,18 +45,11 @@ def add_task_to_db(task: Task):
     session.add(task)
     session.commit()
 
-def read_tasks_from_db_by_date(parent_screen, date):
-    for task in get_tasks_by_date(date):
-        taskBox = TaskBox(parentScreen=parent_screen, taskIdFromDB=task.id,
-                          text=task.name, progress = task.progress,
-                          completed=task.completed)
-        parent_screen.ids.task_list.add_widget(
-            taskBox
-        )
 
 
 
 def get_tasks_by_date(date_str: str):
+
     tasks = session.query(Task).filter_by(date=date_str).all()
     return tasks
 
@@ -95,7 +91,7 @@ def set_task_if_completed(taskID, completed):
 
 
 
-engine = create_engine('sqlite:///planer.db')
+engine = create_engine(f'sqlite:///{db_path}')
 Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
