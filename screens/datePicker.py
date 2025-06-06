@@ -1,18 +1,12 @@
-from datetime import datetime
-
-from kivy.lang import Builder
-from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.pickers import MDModalDatePicker
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.snackbar import MDSnackbar, MDSnackbar
-from kivy.metrics import dp
-import database.models as models
-
+from database import crud
+from screens.eventBus import EventBus
 
 
 class DatePicker(MDScreen):
 
-    def __init__(self, parentScreen, taskID, **kwargs):
+    def __init__(self, parentScreen, taskID, **kwargs): #inicializing calendar window to change task date
         super().__init__(**kwargs)
         date_dialog = MDModalDatePicker()
         date_dialog.bind(on_ok= self.update_task_date)
@@ -21,10 +15,10 @@ class DatePicker(MDScreen):
         self.taskID = taskID
         self.parentScreen = parentScreen
 
-    def update_task_date(self, instance):
+    def update_task_date(self, instance):   #updating task date, using db methods
 
-        models.update_task_date(self.taskID, instance.get_date()[0].strftime("%Y-%m-%d"))
-        self.parentScreen.refresh_tasks()
+        crud.update_task_date(self.taskID, instance.get_date()[0].strftime("%Y-%m-%d"))
+        EventBus.emit("tasks_updated")
         instance.dismiss()
 
 

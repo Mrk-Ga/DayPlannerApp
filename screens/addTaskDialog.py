@@ -1,73 +1,31 @@
 from datetime import datetime, timedelta
 
-from kivy.lang import Builder
 from kivy.factory import Factory
-from kivy.properties import partial
-from kivy.uix.widget import Widget
-from kivymd.uix.button import MDButton, MDButtonText
-from kivymd.uix.dialog import MDDialog, MDDialogHeadlineText, MDDialogSupportingText, MDDialogButtonContainer, \
-    MDDialogContentContainer
+from kivy.lang import Builder
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.label import MDLabel
-from kivymd.uix.textfield import MDTextField
+from kivymd.uix.dialog import MDDialog
 
-from database import models
-from screens import homeScreen
-from screens.taskBox import TaskBox
-
-class AddTaskContent(MDBoxLayout):
-
-    def __init__(self, parentDialog, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.parentDialog = parentDialog
-
-
+from database import models, crud
+from screens.eventBus import EventBus
 
 Builder.load_file("./kv/add_task_dialog.kv")
+
+# class with content of MDDialog, defined in .kv file
+class AddTaskContent(MDBoxLayout):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.parentDialog = None
+
 
 class AddTaskDialog:
     def __init__(self, parent_screen):
         self.parent_screen = parent_screen
-        self.content = AddTaskContent(self)
-
         self.dates_to_add_tasks = [self.parent_screen.acc_date]
 
-
-
-        #this must be declarated here in code, because .kv file couldn't handle it...
-        self.textField = MDTextField(hint_text="dodaj zadanie")
-        # Stwórz dialog, podając content i buttons jako sloty
-        self.dialog = MDDialog(
-            MDDialogHeadlineText(
-                text="Dodaj zadanie",
-                halign="left",
-            ),
-            MDDialogContentContainer(
-
-                self.textField,
-                MDButton(
-                    MDButtonText(text="Dodaj\ncyklicznie" , pos_hint={"center_x":0.5}),
-                    style="filled",
-                    pos_hint={"center_y": 0.5},
-                    on_release=self.add_weekly_task),
-                spacing=15,
-            ),
-            MDDialogButtonContainer(
-                Widget(),
-
-                MDButton(
-                    MDButtonText(text="Powrót"),
-                    style="outlined",
-                    on_release=self.close
-                ),
-                MDButton(
-                    MDButtonText(text="Dodaj"),
-                    style="outlined",
-                    on_release=self.add_task
-                ),
-                spacing="8dp",
-            ),
-        )
+        self.dialog = Factory.AddTaskDialogUI(MDDialog) #building with kv file
+        self.content = self.dialog.ids.task_content #access to dialog content
+        self.content.parentDialog = self
 
     def open(self):
         self.dialog.open()
@@ -76,18 +34,19 @@ class AddTaskDialog:
         self.dialog.dismiss()
 
 
+    #adding task to parentScreen
     def add_task(self, *args):
-        text = self.textField.text.strip()
+        text = self.content.ids.task_input.text.strip()
 
         if text:
             for date in self.dates_to_add_tasks:
                 task = models.Task(name=text, date=date)
-                models.add_task_to_db(task)
+                crud.add_task_to_db(task)
                 self.close()
-                self.parent_screen.refresh_tasks()
+                EventBus.emit("tasks_updated")
 
+    #adding task for same day in 4 weeks time
     def add_weekly_task(self, *args):
-        print("adding weekly task")
         dates = []
         date_obj = datetime.strptime(self.parent_screen.acc_date, "%Y-%m-%d").date()
 

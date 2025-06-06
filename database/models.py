@@ -13,21 +13,25 @@ if platform == 'android':
 else:
     db_path = 'planer.db'
 
+###SIGLETON FOR DB ACCESS
+class Database:
+    _instance = None
 
+    def __new__(cls, db_path=db_path):
+        if cls._instance is None:
+            cls._instance = super(Database, cls).__new__(cls)
+            cls._instance._init_db(db_path)
+        return cls._instance
 
+    def _init_db(self, path):
+        self.engine = create_engine(f'sqlite:///{path}')
+        Base.metadata.create_all(self.engine)
+        self.Session = sessionmaker(bind=self.engine)
 
+    def get_session(self):
+        return self.Session()
 
-class Day(Base):
-    __tablename__ = 'days'
-
-    id = Column(Integer, primary_key=True)
-    date = Column(String, unique=True)  # np. "2025-05-17"
-
-    #tasks = relationship('Task', back_populates='day', cascade='all, delete-orphan')
-
-    def __repr__(self):
-        return f"<Day(date='{self.date}', tasks={len(self.tasks)})>"
-
+### main table in database, used to store tasks informations
 class Task(Base):
     __tablename__ = 'tasks'
 
@@ -40,61 +44,5 @@ class Task(Base):
 
     def __repr__(self):
         return f"<Task(name='{self.name}', day='{self.date}', completed={self.completed})>"
-
-def add_task_to_db(task: Task):
-    session.add(task)
-    session.commit()
-
-
-
-
-def get_tasks_by_date(date_str: str):
-
-    tasks = session.query(Task).filter_by(date=date_str).all()
-    return tasks
-
-def update_task_date(task_id: int, new_date: str):
-    task = session.query(Task).filter_by(id=task_id).first()
-
-    if task:
-        # Zmień datę
-        task.date = new_date
-
-        # Zatwierdź zmiany
-        session.commit()
-        print(f"Zaktualizowano datę zadania (id={task_id}) na {new_date}")
-    else:
-        print(f"Nie znaleziono zadania o id={task_id}")
-
-def remove_task(task_id: int):
-    # Pobierz zadanie o danym id
-    task = session.query(Task).filter_by(id=task_id).first()
-
-    if task:
-        # Usuń zadanie z sesji
-        session.delete(task)
-        # Zatwierdź zmiany
-        session.commit()
-        print(f"Usunięto zadanie o id={task_id}")
-    else:
-        print(f"Nie znaleziono zadania o id={task_id}")
-
-def set_task_progress(taskID, value):
-    task = session.query(Task).filter_by(id=taskID).first()
-    task.progress = value
-    session.commit()
-
-def set_task_if_completed(taskID, completed):
-    task = session.query(Task).filter_by(id=taskID).first()
-    task.completed = completed
-    session.commit()
-
-
-
-engine = create_engine(f'sqlite:///{db_path}')
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-session = Session()
 
 

@@ -1,15 +1,39 @@
-<AddTaskContent@MDBoxLayout>:
+<AddTaskContent>:
+    id: task_content
     orientation: "horizontal"
-    spacing: dp(10)
-    padding: dp(10)
-    size_hint_y: None
-    height: self.minimum_height
-
+    spacing: "10dp"
+    padding: "10dp"
     MDTextField:
         id: task_input
-        hint_text: "Nazwa zadania"
-        size_hint_x: 0.85
+        hint_text: "dodaj zadanie"
+        mode: "filled"
 
-    MDIconButton:
-        icon: "arrow-right"
-        on_release: root.add_weekly_task()
+    MDButton:
+        style: "filled"
+        pos_hint: {"center_x": 0.5}
+        on_release: root.parentDialog.add_weekly_task()
+        MDButtonText:
+            text: "Dodaj\ncyklicznie"
+
+<AddTaskDialogUI@MDDialog>:
+    type: "custom"
+    auto_dismiss: False
+
+    MDDialogHeadlineText:
+        text: "Dodaj zadanie"
+        halign: "left"
+
+    MDDialogContentContainer:
+        padding: [0,dp(20),0,0]
+        AddTaskContent:
+            id: task_content
+
+    MDDialogButtonContainer:
+        MDButton:
+            on_release: task_content.parentDialog.close()
+            MDButtonText:
+                text: "Powrót"
+        MDButton:
+            on_release: task_content.parentDialog.add_task()
+            MDButtonText:
+                text: "Dodaj"

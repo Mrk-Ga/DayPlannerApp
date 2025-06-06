@@ -1,11 +1,11 @@
 from kivymd.uix.pickers import MDModalDatePicker
 from kivymd.uix.screen import MDScreen
-from database import models
-#from kivymd.uix.pickers import MDModalDatePicker
-import kivymd.uix.pickers
+
+from screens.eventBus import EventBus
+
 
 class Calendar(MDScreen):
-    def __init__(self, parentScreen, **kwargs):
+    def __init__(self, parentScreen, **kwargs): #initializing calendar to change date
         super().__init__(**kwargs)
         date_dialog = MDModalDatePicker()
         date_dialog.bind(on_ok= self.change_acc_date)
@@ -13,9 +13,8 @@ class Calendar(MDScreen):
         date_dialog.open()
         self.parentScreen = parentScreen
 
-    def change_acc_date(self, instance):
-        print(instance.get_date()[0])
+    def change_acc_date(self, instance):    #on clicking "OK" in calendar, changing add_cate in parentRoot
         self.parentScreen.ids.headerTitle.text = f"Dzień: {instance.get_date()[0].strftime('%Y-%m-%d')}"
         self.parentScreen.acc_date=instance.get_date()[0].strftime('%Y-%m-%d')
-        self.parentScreen.refresh_tasks()
+        EventBus.emit('tasks_updated')
         instance.dismiss()
