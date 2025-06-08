@@ -1,3 +1,5 @@
+
+### Class used to communicate with other classes in Observer Pattern
 class EventBus:
     _subscribers = {}
 

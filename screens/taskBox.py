@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from kivymd.uix.card import MDCard
 from kivy.lang import Builder
 
-from database import models, crud
+from database import crud
 from screens.datePicker import DatePicker
 from screens.eventBus import EventBus
 
@@ -46,7 +46,6 @@ class TaskBox(MDCard):
 
     def check_slider_value(self, value):
         crud.set_task_progress(self.taskID, value)
-        print(value)
         self.refresh_from_db()
 
     def refresh_from_db(self):

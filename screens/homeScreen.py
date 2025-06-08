@@ -1,14 +1,12 @@
-from datetime import datetime
-from time import sleep
+from datetime import datetime, timedelta
 
 from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 from database import crud
-from database import models
 from screens.addTaskDialog import AddTaskDialog
 from screens.calendar import Calendar
 from screens.eventBus import EventBus
-from screens.taskBox import TaskBox, TaskBoxFactory
+from screens.taskBox import TaskBoxFactory
 
 Builder.load_file("./kv/home_screen.kv")
 
@@ -17,7 +15,7 @@ class HomeScreen(MDScreen):
 
     def on_kv_post(self, base_widget):  #start screen with today date and tasks
         EventBus.subscribe("tasks_updated", self.refresh_tasks)
-        self.acc_date = self.set_accuall_date()
+        self.acc_date = datetime.now().strftime("%Y-%m-%d")
         self.ids.headerTitle.text = f"Dzień: {self.acc_date}"
         EventBus.emit("tasks_updated")
 
@@ -31,7 +29,17 @@ class HomeScreen(MDScreen):
         Calendar(self)
 
     def open_today_tasks(self): #back to today day and tasks
-        self.acc_date = self.set_accuall_date()
+        self.acc_date = datetime.now().strftime("%Y-%m-%d")
+        self.ids.headerTitle.text = f"Dzień: {self.acc_date}"
+        EventBus.emit("tasks_updated")
+
+    #method used to change days with arrows at homeScreen topAppBar
+    def change_date(self,days):
+        date_obj = datetime.strptime(self.acc_date, "%Y-%m-%d").date()
+
+        new_date = date_obj + timedelta(days=days)
+        new_date_str = new_date.strftime("%Y-%m-%d")
+        self.acc_date = new_date_str
         self.ids.headerTitle.text = f"Dzień: {self.acc_date}"
         EventBus.emit("tasks_updated")
 
@@ -43,10 +51,6 @@ class HomeScreen(MDScreen):
 
             self.ids.task_list.add_widget(taskBox)
 
-
-    def set_accuall_date(self):
-        date = datetime.now().strftime("%Y-%m-%d")
-        return date
 
 
 

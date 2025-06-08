@@ -4,7 +4,9 @@ from .models import Task, Database
 ### file hahing methods working on db (using singleton pattern)
 ### every element of CRUD added
 
-def add_task_to_db(task: Task):
+#def add_task_to_db(task: Task):
+def add_task_to_db(taskName, taskDate):
+    task = Task(name=taskName,date=taskDate)
     session = Database().get_session()
     session.add(task)
     session.commit()

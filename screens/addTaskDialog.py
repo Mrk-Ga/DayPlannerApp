@@ -4,7 +4,7 @@ from kivy.factory import Factory
 from kivy.lang import Builder
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dialog import MDDialog
-
+from database.models import Database
 from database import models, crud
 from screens.eventBus import EventBus
 
@@ -31,6 +31,7 @@ class AddTaskDialog:
         self.dialog.open()
 
     def close(self, *args):
+        self.content.ids.task_input.text = ""
         self.dialog.dismiss()
 
 
@@ -40,8 +41,7 @@ class AddTaskDialog:
 
         if text:
             for date in self.dates_to_add_tasks:
-                task = models.Task(name=text, date=date)
-                crud.add_task_to_db(task)
+                crud.add_task_to_db(text, date)
                 self.close()
                 EventBus.emit("tasks_updated")
 
